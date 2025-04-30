@@ -1,4 +1,4 @@
-# untitled2
+# GST Billing app
 
 A new Flutter project.
 
