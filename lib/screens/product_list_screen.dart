@@ -86,19 +86,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
-              return Slidable(
-                endActionPane: ActionPane(
-                  motion: const ScrollMotion(),
-                  children: [
-                    SlidableAction(
-                      onPressed: (context) => _deleteProduct(context, product),
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      icon: Icons.delete,
-                      label: 'Delete',
-                    ),
-                  ],
-                ),
+              return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ListTile(
                   title: Text(product.name),
                   subtitle: Column(
@@ -111,9 +100,20 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         Text('Category: ${product.category}'),
                     ],
                   ),
-                  trailing: Text(
-                    '₹${product.totalPrice.toStringAsFixed(2)}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '₹${product.totalPrice.toStringAsFixed(2)}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(width: 16),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _deleteProduct(context, product),
+                        tooltip: 'Delete Product',
+                      ),
+                    ],
                   ),
                 ),
               );
