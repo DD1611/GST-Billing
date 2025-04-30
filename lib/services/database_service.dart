@@ -82,6 +82,15 @@ class DatabaseService {
     return Product.fromMap(maps.first);
   }
 
+  Future<void> deleteProduct(String id) async {
+    final db = await database;
+    await db.delete(
+      'products',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   // Invoice operations
   Future<void> insertInvoice(Invoice invoice) async {
     final db = await database;
@@ -106,7 +115,7 @@ class DatabaseService {
   Future<List<Invoice>> getAllInvoices() async {
     final db = await database;
     final List<Map<String, dynamic>> invoiceMaps = await db.query('invoices');
-    
+
     List<Invoice> invoices = [];
     for (var invoiceMap in invoiceMaps) {
       final List<Map<String, dynamic>> itemMaps = await db.query(
@@ -136,4 +145,22 @@ class DatabaseService {
     }
     return invoices;
   }
-} 
+
+  Future<void> deleteInvoice(String id) async {
+    final db = await database;
+    await db.transaction((txn) async {
+      // First delete all invoice items
+      await txn.delete(
+        'invoice_items',
+        where: 'invoiceId = ?',
+        whereArgs: [id],
+      );
+      // Then delete the invoice
+      await txn.delete(
+        'invoices',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    });
+  }
+}
